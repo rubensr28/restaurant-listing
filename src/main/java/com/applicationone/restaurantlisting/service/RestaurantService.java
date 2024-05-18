@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,5 +25,19 @@ public class RestaurantService {
                         mapper.mapRestaurantToRestaurantDTO(restaurant))
                 .collect(Collectors.toList());
         return restaurantDTOList;
+    }
+
+    public RestaurantDTO addRestaurantInDB(RestaurantDTO restaurantDTO) {
+        Restaurant savedRestaurant  = restaurantRepo.save(
+                mapper.mapRestaurantDTOtoRestaurant(restaurantDTO));
+        return mapper.mapRestaurantToRestaurantDTO(savedRestaurant);
+    }
+
+    public Optional<RestaurantDTO> fetchRestaurantById(Long id) {
+        Optional<Restaurant> restaurant = restaurantRepo.findById(id);
+        // redundant for study purposes.
+        Optional<RestaurantDTO> restaurantDTO = restaurant.map(
+                value -> mapper.mapRestaurantToRestaurantDTO(value));
+        return restaurantDTO;
     }
 }
